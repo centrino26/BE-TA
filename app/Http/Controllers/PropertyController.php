@@ -50,11 +50,10 @@ class PropertyController extends Controller
             'type_property' => 'required|integer',
             'id_kota' => 'required|integer',
             'id_user' => 'required|integer',
-            'images' => 'required|array|file|image'
+            'images' => 'required|file|image'
         ]);
         // ini create
-        $imageName = time().'.'.$request->images->name().$request->images->extension();  
-     
+        $imageName = time().'.'.$request->images->extension();  
         $request->images->move(public_path('images'), $imageName);
 
         $fields['images'] = $imageName;
@@ -81,6 +80,7 @@ class PropertyController extends Controller
      */
     public function show($id)
     {
+        // * Detail Property
         $property_detail = Property::with('User')->with('images')->with('TypeProperty')->with('offer')->with('kota')->find($id);
         return response()->json([
             'status' => "success",

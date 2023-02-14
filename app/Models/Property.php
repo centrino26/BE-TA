@@ -33,7 +33,7 @@ class Property extends Model
     */
    public function images()
    {
-        $img = $this->hasOne(Image::class, 'id_property', 'id');
+        $img = $this->hasMany(Image::class, 'id_property', 'id');
        return $img;
    }
 
