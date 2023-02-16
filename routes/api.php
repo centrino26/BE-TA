@@ -43,5 +43,5 @@ Route::post('/login',[LoginController::class, 'login'])->name("login");
 Route::post('/register',[LoginController::class, 'register']);
 Route::get('/list/kota/provinsi/{id}',[kotaController::class, 'list']);
 Route::get('/list/provinsi',[kotaController::class, 'list_provinsi']);
-
+// list property
 Route::get('/list-property',[PropertyController::class, 'index']);
