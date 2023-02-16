@@ -31,6 +31,12 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
     Route::post('/list-property/order-update/{id}',[OrderController::class, 'UpdateOrder']);
     Route::post('/list-property/order-destroy/{id}',[OrderController::class, 'DestroyOrder']);
     Route::get('/list-property/order-user/{id}',[OrderController::class, 'UserOrder']);
+
+    Route::prefix('type_property')->group(function () {
+        
+        Route::get('/list/',[PropertyController::class, 'type_property']);
+        Route::get('{id_type_property}/filter/property', [PropertyController::class, 'filter']);
+    });
 });
 
 Route::post('/login',[LoginController::class, 'login'])->name("login");

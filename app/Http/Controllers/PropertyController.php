@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Image;
 use App\Models\Property;
+use App\Models\Type_Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -113,13 +114,22 @@ class PropertyController extends Controller
 
         $fields['images'] = $imageName;
         $image_where = Image::where('id_property', $id)->first();
-        if (File::exists(public_path('images')."/".$image_where->image)) {
-            File::delete(public_path('images')."/".$image_where->image);
+        if($image_where){
+            if (File::exists(public_path('images')."/".$image_where->images)) {
+                File::delete(public_path('images')."/".$image_where->images);
+            }
+            $imageupdate = $image_where->updateOrInsert([
+                'id_property' => $id,
+                'image' => $fields['images']
+            ]);
+        }else{
+            $imageupdate = Image::insert([
+                'id_property' => $id,
+                'image' => $fields['images']
+            ]);
         }
-        $imageupdate = $image_where->update([
-            'id_property' => $id,
-            'image' => $fields['images']
-        ]);
+        
+        
 
         }
 
@@ -154,5 +164,23 @@ class PropertyController extends Controller
         return response()->json([
             'status' => "success",
         ], 200);   
+    }
+
+    public function type_property(){
+        $type =Type_Property::all();
+
+        return response()->json([
+            'status' => "success",
+            'data' => $type
+        ], 200);   
+
+    }
+
+    public function filter($id_type_property){
+        $property = Property::where("type_property", $id_type_property)->get();
+        return response()->json([
+            'status' => "success",
+            'data' => $property
+        ], 200);  
     }
 }
