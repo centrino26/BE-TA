@@ -6,6 +6,7 @@ use App\Http\Controllers\kotaController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ReviewPropertyController;
 
@@ -37,6 +38,10 @@ Route::group(['middleware' => ['auth:sanctum']], function(){
         Route::get('/list/',[PropertyController::class, 'type_property']);
         Route::get('{id_type_property}/filter/property', [PropertyController::class, 'filter']);
     });
+
+    // favorite
+    Route::post('/favorite/',[FavoriteController::class, 'index']);
+    Route::get('/favorite/user',[FavoriteController::class, 'getFavorite']);
 });
 
 Route::post('/login',[LoginController::class, 'login'])->name("login");

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Image;
+use App\Models\EkstraProperty;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -50,6 +51,12 @@ class Property extends Model
    public function kota()
    {
        return $this->hasOne(Kota::class,'intid', 'id_kota');
+   }
+
+   public function extra()
+   {
+        $img = $this->hasMany(EkstraProperty::class, 'id_property', 'id');
+       return $img;
    }
 
 

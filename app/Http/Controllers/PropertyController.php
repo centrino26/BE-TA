@@ -51,23 +51,27 @@ class PropertyController extends Controller
             'type_property' => 'required|integer',
             'id_kota' => 'required|integer',
             'id_user' => 'required|integer',
-            'images' => 'required|file|image'
+            'images' => 'required|array'
         ]);
         // ini create
-        $imageName = time().'.'.$request->images->extension();  
-        $request->images->move(public_path('images'), $imageName);
-
-        $fields['images'] = $imageName;
-
         $create = Property::create($fields);
-        $image_create = Image::create([
-            'id_property' => $create->id,
-            'image' => $fields['images']
-        ]);
+
+        foreach ($request->images as $images) {
+            $imageName = time().'.'.$images->extension(); 
+            $images->move(public_path('images'), $imageName);
+
+            $fields['images'] = $imageName;
+            $image_create = Image::create([
+                'id_property' => $create->id,
+                'image' => $fields['images']
+            ]);
+        }
+        
+
+        
         return response()->json([
             'status' => "success",
             "data" => $create,
-            'images' => $image_create
         ], 200);
 
 
@@ -82,7 +86,7 @@ class PropertyController extends Controller
     public function show($id)
     {
         // * Detail Property
-        $property_detail = Property::with('User')->with('images')->with('TypeProperty')->with('offer')->with('kota')->find($id);
+        $property_detail = Property::with('User')->with('images')->with('TypeProperty')->with('offer')->with('kota')->with('extra')->find($id);
         return response()->json([
             'status' => "success",
             "data" => $property_detail,
