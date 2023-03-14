@@ -21,7 +21,7 @@ class PropertyController extends Controller
         $property = Property::with('User')->with('TypeProperty')->with('images')->paginate(10);
         return response()->json([
             'status' => "success",
-            'image_path' => env("APP_URL", "localhost:8000")."/images",
+            'image_path' => env("APP_URL", "localhost:8000") . "/images",
             "data" => $property,
         ], 200);
     }
@@ -57,7 +57,7 @@ class PropertyController extends Controller
         $create = Property::create($fields);
 
         foreach ($request->images as $images) {
-            $imageName = time().'.'.$images->extension(); 
+            $imageName = time() . '.' . $images->extension();
             $images->move(public_path('images'), $imageName);
 
             $fields['images'] = $imageName;
@@ -66,15 +66,13 @@ class PropertyController extends Controller
                 'image' => $fields['images']
             ]);
         }
-        
 
-        
+
+
         return response()->json([
             'status' => "success",
             "data" => $create,
         ], 200);
-
-
     }
 
     /**
@@ -90,7 +88,7 @@ class PropertyController extends Controller
         return response()->json([
             'status' => "success",
             "data" => $property_detail,
-        ], 200);   
+        ], 200);
     }
 
     /**
@@ -111,30 +109,27 @@ class PropertyController extends Controller
             'images' => 'file|image'
         ]);
         // ini update
-        if($fields['images']){
-            $imageName = time().'.'.$request->images->extension();  
-     
-        $request->images->move(public_path('images'), $imageName);
+        if ($fields['images']) {
+            $imageName = time() . '.' . $request->images->extension();
 
-        $fields['images'] = $imageName;
-        $image_where = Image::where('id_property', $id)->first();
-        if($image_where){
-            if (File::exists(public_path('images')."/".$image_where->images)) {
-                File::delete(public_path('images')."/".$image_where->images);
+            $request->images->move(public_path('images'), $imageName);
+
+            $fields['images'] = $imageName;
+            $image_where = Image::where('id_property', $id)->first();
+            if ($image_where) {
+                if (File::exists(public_path('images') . "/" . $image_where->images)) {
+                    File::delete(public_path('images') . "/" . $image_where->images);
+                }
+                $imageupdate = $image_where->updateOrInsert([
+                    'id_property' => $id,
+                    'image' => $fields['images']
+                ]);
+            } else {
+                $imageupdate = Image::insert([
+                    'id_property' => $id,
+                    'image' => $fields['images']
+                ]);
             }
-            $imageupdate = $image_where->updateOrInsert([
-                'id_property' => $id,
-                'image' => $fields['images']
-            ]);
-        }else{
-            $imageupdate = Image::insert([
-                'id_property' => $id,
-                'image' => $fields['images']
-            ]);
-        }
-        
-        
-
         }
 
         $update = Property::find($id)->update($fields);
@@ -153,7 +148,6 @@ class PropertyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
     }
 
     /**
@@ -167,24 +161,26 @@ class PropertyController extends Controller
         Property::destroy($id);
         return response()->json([
             'status' => "success",
-        ], 200);   
+            'boolean' => true,
+        ], 200);
     }
 
-    public function type_property(){
-        $type =Type_Property::all();
+    public function type_property()
+    {
+        $type = Type_Property::all();
 
         return response()->json([
             'status' => "success",
             'data' => $type
-        ], 200);   
-
+        ], 200);
     }
 
-    public function filter($id_type_property){
+    public function filter($id_type_property)
+    {
         $property = Property::where("type_property", $id_type_property)->get();
         return response()->json([
             'status' => "success",
             'data' => $property
-        ], 200);  
+        ], 200);
     }
 }

@@ -30,10 +30,8 @@ Config::$isProduction = false;
 Config::$isSanitized = Config::$is3ds = true;
 
 Route::group(["prefix" => '/midtrans'], function () {
-    Route::get("/", function () {
-        return response("hallo", 200);
-    });
-    Route::post('/initiate', [MidtransController::class, 'InitiateTransaction']);
+    Route::middleware(['auth:sanctum'])->post('/initiate', [MidtransController::class, 'InitiateTransaction']);
+    Route::post('/notification', [MidtransController::class, 'notification']);
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
